@@ -1,11 +1,17 @@
 import 'dart:collection';
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:task_management/models/task.dart';
+import 'package:task_management/utilities/constants.dart';
 
 class TaskProvider extends ChangeNotifier {
   final List<Task> _todoTaskList = [];
   final List<Task> _inProgressTaskList = [];
   final List<Task> _doneTaskList = [];
+
+  Box<Task> _todoBox = Hive.box<Task>(todoTaskBox);
+  Box<Task> _inProgressBox = Hive.box<Task>(inProgressTaskBox);
+  Box<Task> _doneBox = Hive.box<Task>(doneTaskBox);
 
   List<Task> get allInProgressTasks =>
       UnmodifiableListView(_inProgressTaskList);
@@ -23,57 +29,144 @@ class TaskProvider extends ChangeNotifier {
 
   int get numOfDoneTask => _doneTaskList.length;
 
-  void addTodoTask(Task task) {
-    _todoTaskList.add(task);
-    notifyListeners();
+  void addTodoTask(Task task) async {
+    try {
+      _todoTaskList.add(task);
+      await _todoBox.add(task);
+      debugPrint('${task.taskName} added successfully');
+
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Error: $e');
+    }
   }
 
-  void addInProgressTask(Task task) {
-    _inProgressTaskList.add(task);
-    notifyListeners();
+  void addInProgressTask(Task task) async {
+    try {
+      _inProgressTaskList.add(task);
+      await _inProgressBox.add(task);
+      debugPrint('${task.taskName} added successfully');
+
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Error: $e');
+    }
   }
 
-  void addDoneTask(Task task) {
-    _doneTaskList.add(task);
-    notifyListeners();
+  void addDoneTask(Task task) async {
+    try {
+      _doneTaskList.add(task);
+      await _doneBox.add(task);
+      debugPrint('${task.taskName} added successfully');
+
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Error: $e');
+    }
   }
 
   void updateTodoTask({
     required int index,
     required Task task,
-  }) {
-    _todoTaskList[index] = task;
-    notifyListeners();
+  }) async {
+    try {
+      _todoTaskList[index] = task;
+      await _todoBox.putAt(index, task);
+      debugPrint('${task.taskName} updated successfully');
+
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Error: $e');
+    }
   }
 
   void updateInProgressTask({
     required int index,
     required Task task,
-  }) {
-    _inProgressTaskList[index] = task;
-    notifyListeners();
+  }) async {
+    try {
+      _inProgressTaskList[index] = task;
+      await _inProgressBox.putAt(index, task);
+      debugPrint('${task.taskName} updated successfully');
+
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Error: $e');
+    }
   }
 
   void updateDoneTask({
     required int index,
     required Task task,
-  }) {
-    _doneTaskList[index] = task;
+  }) async {
+    try {
+      _doneTaskList[index] = task;
+      await _doneBox.putAt(index, task);
+      debugPrint('${task.taskName} updated successfully');
+
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Error: $e');
+    }
+  }
+
+  void deleteTodoTask(int index) async {
+    try {
+      _todoTaskList.removeAt(index);
+      await _todoBox.deleteAt(index);
+      debugPrint('Todo Removed Successfully');
+
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Error: $e');
+    }
+  }
+
+  void deleteInProgressTask(int index) async {
+    try {
+      _inProgressTaskList.removeAt(index);
+      await _inProgressBox.deleteAt(index);
+      debugPrint('Todo Removed Successfully');
+
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Error: $e');
+    }
+  }
+
+  void deleteDoneTask(int index) async {
+    try {
+      _doneTaskList.removeAt(index);
+      await _doneBox.deleteAt(index);
+      debugPrint('Todo Removed Successfully');
+
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Error: $e');
+    }
+  }
+
+  void clearTasks() async {
+    _todoTaskList.clear();
+    _inProgressTaskList.clear();
+    _doneTaskList.clear();
+
+    await _todoBox.clear();
+    await _inProgressBox.clear();
+    await _doneBox.clear();
+
     notifyListeners();
   }
 
-  void deleteTodoTask(int index) {
-    _todoTaskList.removeAt(index);
-    notifyListeners();
-  }
+  void loadTasks() {
+    _todoTaskList.clear();
+    _inProgressTaskList.clear();
+    _doneTaskList.clear();
 
-  void deleteInProgressTask(int index) {
-    _inProgressTaskList.removeAt(index);
-    notifyListeners();
-  }
+    _todoTaskList.addAll(_todoBox.values);
+    _inProgressTaskList.addAll(_inProgressBox.values);
+    _doneTaskList.addAll(_doneBox.values);
 
-  void deleteDoneTask(int index) {
-    _doneTaskList.removeAt(index);
     notifyListeners();
   }
 }

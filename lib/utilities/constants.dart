@@ -6,6 +6,10 @@ import 'package:intl/intl.dart';
 const themeColor = Colors.blue;
 const errorColor = Color(0xFFCF6679);
 const kWhiteColor = Color(0xffFFFFFF);
+const String todoTaskBox = "todotaskbox";
+const String inProgressTaskBox = "inprogresstaskbox";
+const String doneTaskBox = "donetaskbox";
+const String themeBox = "themebox";
 
 final List<String> categories = ["To Do", "In Progress", "Done"];
 

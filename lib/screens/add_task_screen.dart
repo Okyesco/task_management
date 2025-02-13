@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:task_management/provider/task_provider.dart';
 import 'package:task_management/models/task.dart';
@@ -27,8 +28,9 @@ class CreateTaskScreenState extends State<CreateTaskScreen> {
   TimeOfDay endTime = const TimeOfDay(hour: 11, minute: 0);
   final TextEditingController taskNameController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
+  // final _taskBox = Hive.box(taskBox);
 
-  void createTask() {
+  void createTask() async {
     if (taskNameController.text.trim().isEmpty) {
       showToast("Task name field cannot be empty");
       return;
@@ -48,12 +50,17 @@ class CreateTaskScreenState extends State<CreateTaskScreen> {
       category: categories[_selectedCategoryIndex],
     );
 
+    // final hiveTask = await _taskBox.add(task);
+    // print(hiveTask);
+
     _selectedCategoryIndex == 0
         ? taskProvider.addTodoTask(task)
         : _selectedCategoryIndex == 1
             ? taskProvider.addInProgressTask(task)
             : taskProvider.addDoneTask(task);
-    Navigator.pop(context);
+    if (mounted) {
+      Navigator.pop(context);
+    }
   }
 
   void updateTask() {

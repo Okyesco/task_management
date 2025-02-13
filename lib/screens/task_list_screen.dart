@@ -5,7 +5,7 @@ import 'package:task_management/models/task.dart';
 import 'package:task_management/provider/task_provider.dart';
 import 'package:task_management/screens/add_task_screen.dart';
 import 'package:task_management/utilities/constants.dart';
-import 'package:intl/intl.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 class TaskListUI extends StatelessWidget {
   final int categoryIndex;
@@ -81,7 +81,7 @@ class TaskListUI extends StatelessWidget {
                                     : categoryIndex == 1
                                         ? taskProvider.allInProgressTasks[index]
                                         : taskProvider.allDoneTasks[index],
-                                index: index,
+                                taskIndex: index,
                               ),
                             ),
                           );
@@ -150,13 +150,16 @@ class TaskCard extends StatelessWidget {
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Text(
-            //   formatDate(task.date),
-            //   style: TextStyle(
-            //     color: Colors.grey[600],
-            //     fontSize: 12.sp,
-            //   ),
-            // ),
+            Text(
+              formatDate(task.date),
+              style: TextStyle(
+                color: Colors.grey[600],
+                fontSize: 12.sp,
+              ),
+            ),
+            SizedBox(
+              height: 2.h,
+            ),
             Text(
               "${formatTimeOfDay(task.starTime)} - ${formatTimeOfDay(task.endTime)}",
               style: TextStyle(
@@ -172,21 +175,5 @@ class TaskCard extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-String formatTimeOfDay(TimeOfDay time) {
-  final hour = time.hourOfPeriod == 0 ? 12 : time.hourOfPeriod;
-  final minute = time.minute.toString().padLeft(2, '0');
-  final period = time.period == DayPeriod.am ? "AM" : "PM";
-  return "$hour:$minute $period";
-}
-
-String formatDate(DateTime date) {
-  try {
-    final String formattedDate = DateFormat('dd-MM-yyyy').format(date);
-    return formattedDate;
-  } catch (e) {
-    return date.toString();
   }
 }

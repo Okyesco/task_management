@@ -1,12 +1,11 @@
 import 'dart:collection';
-
 import 'package:flutter/material.dart';
 import 'package:task_management/models/task.dart';
 
 class TaskProvider extends ChangeNotifier {
-  List<Task> _todoTaskList = [];
-  List<Task> _inProgressTaskList = [];
-  List<Task> _doneTaskList = [];
+  final List<Task> _todoTaskList = [];
+  final List<Task> _inProgressTaskList = [];
+  final List<Task> _doneTaskList = [];
 
   List<Task> get allInProgressTasks =>
       UnmodifiableListView(_inProgressTaskList);

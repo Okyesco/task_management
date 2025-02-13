@@ -7,12 +7,12 @@ import 'package:task_management/utilities/constants.dart';
 
 class CreateTaskScreen extends StatefulWidget {
   final Task? task;
-  final int? index;
+  final int? taskIndex;
   final int? categoryIndexForTaskCreation;
   const CreateTaskScreen({
     super.key,
     this.task,
-    this.index,
+    this.taskIndex,
     this.categoryIndexForTaskCreation,
   });
 
@@ -77,19 +77,26 @@ class CreateTaskScreenState extends State<CreateTaskScreen> {
     );
     if (categories[_selectedCategoryIndex] == widget.task!.category) {
       _selectedCategoryIndex == 0
-          ? taskProvider.updateTodoTask(index: widget.index!, task: task)
+          ? taskProvider.updateTodoTask(index: widget.taskIndex!, task: task)
           : _selectedCategoryIndex == 1
               ? taskProvider.updateInProgressTask(
-                  index: widget.index!, task: task)
-              : taskProvider.updateDoneTask(index: widget.index!, task: task);
+                  index: widget.taskIndex!, task: task)
+              : taskProvider.updateDoneTask(
+                  index: widget.taskIndex!, task: task);
     }
+
     if (categories[_selectedCategoryIndex] != widget.task!.category) {
       _selectedCategoryIndex == 0
           ? taskProvider.addTodoTask(task)
           : _selectedCategoryIndex == 1
               ? taskProvider.addInProgressTask(task)
               : taskProvider.addDoneTask(task);
-      taskProvider.deleteInProgressTask(widget.index!);
+
+      _setCategory(widget.task!.category) == 0
+          ? taskProvider.deleteTodoTask(widget.taskIndex!)
+          : _setCategory(widget.task!.category) == 1
+              ? taskProvider.deleteInProgressTask(widget.taskIndex!)
+              : taskProvider.deleteDoneTask(widget.taskIndex!);
     }
 
     Navigator.pop(context);
@@ -97,7 +104,6 @@ class CreateTaskScreenState extends State<CreateTaskScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     if (widget.task != null) {
@@ -116,6 +122,13 @@ class CreateTaskScreenState extends State<CreateTaskScreen> {
         _selectedCategoryIndex = widget.categoryIndexForTaskCreation!;
       });
     }
+  }
+
+  @override
+  void dispose() {
+    taskNameController.clear();
+    descriptionController.clear();
+    super.dispose();
   }
 
   int _setCategory(String category) {
@@ -210,8 +223,6 @@ class CreateTaskScreenState extends State<CreateTaskScreen> {
                               setState(() {
                                 _selectedCategoryIndex = selected ? index : -1;
                               });
-                              // print(_selectedCategoryIndex);
-                              // print(_categories[_selectedCategoryIndex]);
                             },
                           );
                         }),
@@ -370,26 +381,6 @@ class CreateTaskScreenState extends State<CreateTaskScreen> {
       ),
     );
   }
-
-  // Widget _buildCategoryChip(String label, bool isSelected) {
-  //   return GestureDetector(
-  //     onTap: () => setState(() => selectedCategory = label),
-  //     child: Container(
-  //       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-  //       decoration: BoxDecoration(
-  //         color: isSelected ? Colors.blue : Colors.grey[50],
-  //         borderRadius: BorderRadius.circular(20.r),
-  //       ),
-  //       child: Text(
-  //         label,
-  //         style: TextStyle(
-  //           color: isSelected ? Colors.white : Colors.black,
-  //           fontWeight: FontWeight.w500,
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
 
   Widget _buildTimeField(TimeOfDay time, Function(TimeOfDay) onTimeSelected) {
     return GestureDetector(

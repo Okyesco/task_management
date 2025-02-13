@@ -45,17 +45,17 @@ class HomeUI extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Tuesday',
+                            formatDateShowWeekDay(DateTime.now()),
                             style: TextStyle(
                               color: Colors.grey[600],
                               fontSize: 14.sp,
                             ),
                           ),
                           Text(
-                            '11 February',
+                            formatDateShowDayAndMonth(DateTime.now()),
                             style: TextStyle(
-                              fontSize: 24.sp,
-                              fontWeight: FontWeight.bold,
+                              fontSize: 18.sp,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
                         ],
@@ -289,3 +289,5 @@ class HomeUI extends StatelessWidget {
     );
   }
 }
+
+

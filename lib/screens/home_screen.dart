@@ -102,18 +102,10 @@ class HomeUI extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: 8.h),
-                  Text(
-                    '${taskProvider.numOfAllTask} Total Tasks',
-                    style: TextStyle(
-                      color: Colors.grey[600],
-                      fontSize: 16.sp,
-                    ),
-                  ),
 
                   // Information Architecture Card
                   SizedBox(height: 20.h),
-                  _buildCurrentTaskCard(),
+                  _buildCurrentTaskCard(taskProvider),
 
                   // Monthly Preview Section
                   SizedBox(height: 30.h),
@@ -193,18 +185,6 @@ class HomeUI extends StatelessWidget {
                   ),
 
                   SizedBox(height: 20.h),
-
-                  // // Bottom Navigation Bar placeholder
-                  // const Spacer(),
-                  // const Row(
-                  //   mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  //   children: [
-                  //     Icon(Icons.home, color: Colors.deepPurple),
-                  //     Icon(Icons.calendar_today, color: Colors.grey),
-                  //     Icon(Icons.add_circle_outline, color: Colors.grey),
-                  //     Icon(Icons.person_outline, color: Colors.grey),
-                  //   ],
-                  // ),
                 ],
               ),
             ),
@@ -214,7 +194,7 @@ class HomeUI extends StatelessWidget {
     );
   }
 
-  Container _buildCurrentTaskCard() {
+  Container _buildCurrentTaskCard(TaskProvider taskProvider) {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 16.w),
       decoration: BoxDecoration(
@@ -222,35 +202,28 @@ class HomeUI extends StatelessWidget {
         borderRadius: BorderRadius.circular(16.r),
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                'Information Architecture',
+                taskProvider.numOfAllTask.toString(),
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: 18.sp,
+                  fontSize: 32.sp,
                   fontWeight: FontWeight.w500,
                 ),
               ),
               SizedBox(height: 4.h),
               Text(
-                'Saber & Oro',
+                'Total Tasks',
                 style: TextStyle(
                   color: Colors.white.withOpacity(0.8),
-                  fontSize: 14.sp,
+                  fontSize: 16.sp,
                 ),
               ),
             ],
-          ),
-          Text(
-            'Now',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 14.sp,
-            ),
           ),
         ],
       ),
@@ -265,7 +238,7 @@ class HomeUI extends StatelessWidget {
         borderRadius: BorderRadius.circular(16.r),
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
@@ -280,7 +253,7 @@ class HomeUI extends StatelessWidget {
           Text(
             label,
             style: TextStyle(
-              fontSize: 14.sp,
+              fontSize: 16.sp,
               color: Colors.white.withOpacity(0.8),
             ),
           ),
@@ -289,5 +262,3 @@ class HomeUI extends StatelessWidget {
     );
   }
 }
-
-

@@ -34,72 +34,90 @@ class TaskListUI extends StatelessWidget {
         elevation: 1,
         child: const Icon(Icons.add),
       ),
-      body: SafeArea(
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
-          child: Consumer<TaskProvider>(
-            builder: (context, taskProvider, child) => Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    IconButton(
-                      icon: Icon(Icons.arrow_back_ios, size: 20.sp),
-                      onPressed: () => Navigator.pop(context),
-                    ),
-                    Text(
-                      categories[categoryIndex],
-                      style: TextStyle(
-                        fontSize: 24.sp,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 16.h),
-                Expanded(
-                  child: ListView.separated(
-                    shrinkWrap: true,
-                    physics: const BouncingScrollPhysics(
-                      parent: AlwaysScrollableScrollPhysics(),
-                    ),
-                    itemCount: categoryIndex == 0
-                        ? taskProvider.numOfTodoTask
-                        : categoryIndex == 1
-                            ? taskProvider.numOfInProgressTask
-                            : taskProvider.numOfDoneTask,
-                    separatorBuilder: (context, index) =>
-                        SizedBox(height: 12.h),
-                    itemBuilder: (context, index) {
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => CreateTaskScreen(
-                                task: categoryIndex == 0
-                                    ? taskProvider.allToDoTasks[index]
-                                    : categoryIndex == 1
-                                        ? taskProvider.allInProgressTasks[index]
-                                        : taskProvider.allDoneTasks[index],
-                                taskIndex: index,
+      body: Consumer<TaskProvider>(
+        builder: (context, taskProvider, child) => SafeArea(
+          child: categoryIndex == 0 && taskProvider.numOfTodoTask == 0
+              ? _buildEmptyTasList(categories[0], context, categoryIndex)
+              : categoryIndex == 1 && taskProvider.numOfInProgressTask == 0
+                  ? _buildEmptyTasList(categories[1], context, categoryIndex)
+                  : categoryIndex == 2 && taskProvider.numOfDoneTask == 0
+                      ? _buildEmptyTasList(
+                          categories[2], context, categoryIndex)
+                      : Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 16.w,
+                            vertical: 16.h,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  IconButton(
+                                    icon:
+                                        Icon(Icons.arrow_back_ios, size: 20.sp),
+                                    onPressed: () => Navigator.pop(context),
+                                  ),
+                                  Text(
+                                    categories[categoryIndex],
+                                    style: TextStyle(
+                                      fontSize: 24.sp,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ),
-                          );
-                        },
-                        child: TaskCard(
-                          task: categoryIndex == 0
-                              ? taskProvider.allToDoTasks[index]
-                              : categoryIndex == 1
-                                  ? taskProvider.allInProgressTasks[index]
-                                  : taskProvider.allDoneTasks[index],
+                              SizedBox(height: 16.h),
+                              Expanded(
+                                child: ListView.separated(
+                                  shrinkWrap: true,
+                                  physics: const BouncingScrollPhysics(
+                                    parent: AlwaysScrollableScrollPhysics(),
+                                  ),
+                                  itemCount: categoryIndex == 0
+                                      ? taskProvider.numOfTodoTask
+                                      : categoryIndex == 1
+                                          ? taskProvider.numOfInProgressTask
+                                          : taskProvider.numOfDoneTask,
+                                  separatorBuilder: (context, index) =>
+                                      SizedBox(height: 12.h),
+                                  itemBuilder: (context, index) {
+                                    return GestureDetector(
+                                      onTap: () {
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                CreateTaskScreen(
+                                              task: categoryIndex == 0
+                                                  ? taskProvider
+                                                      .allToDoTasks[index]
+                                                  : categoryIndex == 1
+                                                      ? taskProvider
+                                                              .allInProgressTasks[
+                                                          index]
+                                                      : taskProvider
+                                                          .allDoneTasks[index],
+                                              taskIndex: index,
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                      child: TaskCard(
+                                        task: categoryIndex == 0
+                                            ? taskProvider.allToDoTasks[index]
+                                            : categoryIndex == 1
+                                                ? taskProvider
+                                                    .allInProgressTasks[index]
+                                                : taskProvider
+                                                    .allDoneTasks[index],
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      );
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ),
         ),
       ),
     );
@@ -176,4 +194,56 @@ class TaskCard extends StatelessWidget {
       ),
     );
   }
+}
+
+Widget _buildEmptyTasList(
+  String category,
+  BuildContext context,
+  int categoryIndex,
+) {
+  return Padding(
+    padding: EdgeInsets.symmetric(
+      horizontal: 16.w,
+      vertical: 16.h,
+    ),
+    child: Column(
+      children: [
+        Row(
+          children: [
+            IconButton(
+              icon: Icon(Icons.arrow_back_ios, size: 20.sp),
+              onPressed: () => Navigator.pop(context),
+            ),
+            Text(
+              categories[categoryIndex],
+              style: TextStyle(
+                fontSize: 24.sp,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+        Expanded(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.list_alt_outlined,
+                size: 80.w,
+                color: Colors.grey,
+              ),
+              SizedBox(height: 16.h),
+              Text(
+                '$category task is empty',
+                style: TextStyle(
+                  color: Colors.grey[600],
+                  fontSize: 16.sp,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    ),
+  );
 }

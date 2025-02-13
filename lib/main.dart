@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:task_management/provider/task_provider.dart';
 import 'package:task_management/provider/theme_provider.dart';
 import 'package:task_management/screens/home_screen.dart';
@@ -6,7 +7,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:task_management/utilities/theme_data.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+  ]);
   runApp(
     MultiProvider(
       providers: [

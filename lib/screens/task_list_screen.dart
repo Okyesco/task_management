@@ -102,14 +102,40 @@ class TaskListUI extends StatelessWidget {
                                           ),
                                         );
                                       },
-                                      child: TaskCard(
-                                        task: categoryIndex == 0
-                                            ? taskProvider.allToDoTasks[index]
-                                            : categoryIndex == 1
-                                                ? taskProvider
-                                                    .allInProgressTasks[index]
-                                                : taskProvider
-                                                    .allDoneTasks[index],
+                                      child: Slidable(
+                                        key: const Key('item_key'),
+                                        endActionPane: ActionPane(
+                                          motion: const ScrollMotion(),
+                                          children: [
+                                            SlidableAction(
+                                              onPressed:
+                                                  (BuildContext context) {
+                                                categoryIndex == 0
+                                                    ? taskProvider
+                                                        .deleteTodoTask(index)
+                                                    : categoryIndex == 1
+                                                        ? taskProvider
+                                                            .deleteInProgressTask(
+                                                                index)
+                                                        : taskProvider
+                                                            .deleteDoneTask(
+                                                                index);
+                                              },
+                                              backgroundColor: Colors.red,
+                                              icon: Icons.delete,
+                                              label: 'Delete',
+                                            ),
+                                          ],
+                                        ),
+                                        child: TaskCard(
+                                          task: categoryIndex == 0
+                                              ? taskProvider.allToDoTasks[index]
+                                              : categoryIndex == 1
+                                                  ? taskProvider
+                                                      .allInProgressTasks[index]
+                                                  : taskProvider
+                                                      .allDoneTasks[index],
+                                        ),
                                       ),
                                     );
                                   },

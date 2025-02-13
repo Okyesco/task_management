@@ -129,7 +129,9 @@ class HomeUI extends StatelessWidget {
                     onTap: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) => TaskListUI(),
+                          builder: (context) => const TaskListUI(
+                            categoryIndex: 1,
+                          ),
                         ),
                       );
                     },
@@ -138,7 +140,7 @@ class HomeUI extends StatelessWidget {
                         Expanded(
                           child: _buildStatCard(
                             taskProvider.numOfInProgressTask.toString(),
-                            'In Progress',
+                            categories[1],
                             Colors.pink[300]!,
                           ),
                         ),
@@ -149,20 +151,42 @@ class HomeUI extends StatelessWidget {
                   Row(
                     children: [
                       Expanded(
-                        child: _buildStatCard(
-                          taskProvider.numOfTodoTask.toString(),
-                          'To Do',
-                          Colors.orange[300]!,
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => const TaskListUI(
+                                  categoryIndex: 0,
+                                ),
+                              ),
+                            );
+                          },
+                          child: _buildStatCard(
+                            taskProvider.numOfTodoTask.toString(),
+                            categories[0],
+                            Colors.orange[300]!,
+                          ),
                         ),
                       ),
                       SizedBox(
                         width: 10.w,
                       ),
                       Expanded(
-                        child: _buildStatCard(
-                          taskProvider.numOfDoneTask.toString(),
-                          'Done',
-                          Colors.greenAccent,
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => const TaskListUI(
+                                  categoryIndex: 2,
+                                ),
+                              ),
+                            );
+                          },
+                          child: _buildStatCard(
+                            taskProvider.numOfDoneTask.toString(),
+                            categories[2],
+                            Colors.greenAccent,
+                          ),
                         ),
                       ),
                     ],

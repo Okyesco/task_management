@@ -6,7 +6,15 @@ import 'package:task_management/models/task.dart';
 import 'package:task_management/utilities/constants.dart';
 
 class CreateTaskScreen extends StatefulWidget {
-  const CreateTaskScreen({super.key});
+  final Task? task;
+  final int? index;
+  final int? categoryIndexForTaskCreation;
+  const CreateTaskScreen({
+    super.key,
+    this.task,
+    this.index,
+    this.categoryIndexForTaskCreation,
+  });
 
   @override
   CreateTaskScreenState createState() => CreateTaskScreenState();
@@ -19,8 +27,6 @@ class CreateTaskScreenState extends State<CreateTaskScreen> {
   TimeOfDay endTime = const TimeOfDay(hour: 11, minute: 0);
   final TextEditingController taskNameController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
-
-  final List<String> _categories = ["To Do", "In Progress", "Done"];
 
   void createTask() {
     if (taskNameController.text.trim().isEmpty) {
@@ -39,7 +45,7 @@ class CreateTaskScreenState extends State<CreateTaskScreen> {
       starTime: startTime,
       endTime: endTime,
       description: descriptionController.text.trim(),
-      category: _categories[_selectedCategoryIndex],
+      category: categories[_selectedCategoryIndex],
     );
 
     _selectedCategoryIndex == 0
@@ -48,6 +54,78 @@ class CreateTaskScreenState extends State<CreateTaskScreen> {
             ? taskProvider.addInProgressTask(task)
             : taskProvider.addDoneTask(task);
     Navigator.pop(context);
+  }
+
+  void updateTask() {
+    if (taskNameController.text.trim().isEmpty) {
+      showToast("Task name field cannot be empty");
+      return;
+    }
+    if (descriptionController.text.trim().isEmpty) {
+      showToast("Description field cannot be empty");
+      return;
+    }
+
+    TaskProvider taskProvider = context.read<TaskProvider>();
+    Task task = Task(
+      taskName: taskNameController.text.trim(),
+      date: selectedDate,
+      starTime: startTime,
+      endTime: endTime,
+      description: descriptionController.text.trim(),
+      category: categories[_selectedCategoryIndex],
+    );
+    if (categories[_selectedCategoryIndex] == widget.task!.category) {
+      _selectedCategoryIndex == 0
+          ? taskProvider.updateTodoTask(index: widget.index!, task: task)
+          : _selectedCategoryIndex == 1
+              ? taskProvider.updateInProgressTask(
+                  index: widget.index!, task: task)
+              : taskProvider.updateDoneTask(index: widget.index!, task: task);
+    }
+    if (categories[_selectedCategoryIndex] != widget.task!.category) {
+      _selectedCategoryIndex == 0
+          ? taskProvider.addTodoTask(task)
+          : _selectedCategoryIndex == 1
+              ? taskProvider.addInProgressTask(task)
+              : taskProvider.addDoneTask(task);
+      taskProvider.deleteInProgressTask(widget.index!);
+    }
+
+    Navigator.pop(context);
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    if (widget.task != null) {
+      setState(() {
+        taskNameController.text = widget.task!.taskName;
+        descriptionController.text = widget.task!.description;
+        startTime = widget.task!.starTime;
+        endTime = widget.task!.endTime;
+        selectedDate = widget.task!.date;
+        _selectedCategoryIndex = _setCategory(widget.task!.category);
+      });
+    }
+
+    if (widget.categoryIndexForTaskCreation != null) {
+      setState(() {
+        _selectedCategoryIndex = widget.categoryIndexForTaskCreation!;
+      });
+    }
+  }
+
+  int _setCategory(String category) {
+    if (category == categories[0]) {
+      return 0;
+    } else if (category == categories[1]) {
+      return 1;
+    } else {
+      return 2;
+    }
   }
 
   @override
@@ -68,7 +146,7 @@ class CreateTaskScreenState extends State<CreateTaskScreen> {
                     onPressed: () => Navigator.pop(context),
                   ),
                   Text(
-                    'Create New Task',
+                    widget.task == null ? 'Create New Task' : 'Update Task',
                     style: TextStyle(
                       fontSize: 24.sp,
                       fontWeight: FontWeight.w600,
@@ -119,10 +197,10 @@ class CreateTaskScreenState extends State<CreateTaskScreen> {
                       Wrap(
                         spacing: 8.0,
                         runSpacing: 4.0,
-                        children: List.generate(_categories.length, (index) {
+                        children: List.generate(categories.length, (index) {
                           return ChoiceChip(
                             label: Text(
-                              _categories[index],
+                              categories[index],
                               style: const TextStyle(
                                 fontWeight: FontWeight.w500,
                               ),
@@ -262,7 +340,7 @@ class CreateTaskScreenState extends State<CreateTaskScreen> {
                         width: double.infinity,
                         child: ElevatedButton(
                           onPressed: () {
-                            createTask();
+                            widget.task == null ? createTask() : updateTask();
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.blue,
@@ -272,7 +350,7 @@ class CreateTaskScreenState extends State<CreateTaskScreen> {
                             ),
                           ),
                           child: Text(
-                            'Create Task',
+                            widget.task == null ? 'Create Task' : 'Update Task',
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 16.sp,

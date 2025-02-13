@@ -1,61 +1,44 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:task_management/models/task.dart';
 import 'package:task_management/provider/task_provider.dart';
 import 'package:task_management/screens/add_task_screen.dart';
-
-class Task {
-  final String title;
-  final String timeRange;
-  final IconData icon;
-  final Color iconBackgroundColor;
-
-  Task({
-    required this.title,
-    required this.timeRange,
-    required this.icon,
-    required this.iconBackgroundColor,
-  });
-}
+import 'package:task_management/utilities/constants.dart';
+import 'package:intl/intl.dart';
 
 class TaskListUI extends StatelessWidget {
-  final List<Task> tasks = [
-    Task(
-      title: 'UI Design',
-      timeRange: '09:00 AM - 11:00 AM',
-      icon: Icons.palette,
-      iconBackgroundColor: Colors.orange.shade100,
-    ),
-    Task(
-      title: 'Web Development',
-      timeRange: '11:30 AM - 12:30 PM',
-      icon: Icons.code,
-      iconBackgroundColor: Colors.blue.shade100,
-    ),
-    Task(
-      title: 'Office Meeting',
-      timeRange: '02:00 PM - 03:00 PM',
-      icon: Icons.people,
-      iconBackgroundColor: Colors.green.shade100,
-    ),
-    Task(
-      title: 'Dashboard Design',
-      timeRange: '03:30 PM - 05:00 PM',
-      icon: Icons.lightbulb,
-      iconBackgroundColor: Colors.yellow.shade100,
-    ),
-  ];
+  final int categoryIndex;
 
-  TaskListUI({super.key});
+  const TaskListUI({
+    super.key,
+    required this.categoryIndex,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        tooltip: "Add new task",
+        onPressed: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => CreateTaskScreen(
+                categoryIndexForTaskCreation: categoryIndex,
+              ),
+            ),
+          );
+        },
+        foregroundColor: Colors.white,
+        backgroundColor: Colors.lightBlue,
+        elevation: 1,
+        child: const Icon(Icons.add),
+      ),
       body: SafeArea(
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
           child: Consumer<TaskProvider>(
-            builder: (context, tasks, child) => Column(
+            builder: (context, taskProvider, child) => Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
@@ -65,7 +48,7 @@ class TaskListUI extends StatelessWidget {
                       onPressed: () => Navigator.pop(context),
                     ),
                     Text(
-                      "Ongoing Task",
+                      categories[categoryIndex],
                       style: TextStyle(
                         fontSize: 24.sp,
                         fontWeight: FontWeight.bold,
@@ -80,19 +63,35 @@ class TaskListUI extends StatelessWidget {
                     physics: const BouncingScrollPhysics(
                       parent: AlwaysScrollableScrollPhysics(),
                     ),
-                    itemCount: tasks.length,
-                    separatorBuilder: (context, index) => SizedBox(height: 12.h),
+                    itemCount: categoryIndex == 0
+                        ? taskProvider.numOfTodoTask
+                        : categoryIndex == 1
+                            ? taskProvider.numOfInProgressTask
+                            : taskProvider.numOfDoneTask,
+                    separatorBuilder: (context, index) =>
+                        SizedBox(height: 12.h),
                     itemBuilder: (context, index) {
                       return GestureDetector(
                         onTap: () {
                           Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (context) => const CreateTaskScreen(),
+                              builder: (context) => CreateTaskScreen(
+                                task: categoryIndex == 0
+                                    ? taskProvider.allToDoTasks[index]
+                                    : categoryIndex == 1
+                                        ? taskProvider.allInProgressTasks[index]
+                                        : taskProvider.allDoneTasks[index],
+                                index: index,
+                              ),
                             ),
                           );
                         },
                         child: TaskCard(
-                          task: tasks[index],
+                          task: categoryIndex == 0
+                              ? taskProvider.allToDoTasks[index]
+                              : categoryIndex == 1
+                                  ? taskProvider.allInProgressTasks[index]
+                                  : taskProvider.allDoneTasks[index],
                         ),
                       );
                     },
@@ -143,17 +142,29 @@ class TaskCard extends StatelessWidget {
           ),
         ),
         title: Text(
-          task.title,
+          task.taskName,
           style: const TextStyle(
             fontWeight: FontWeight.w600,
           ),
         ),
-        subtitle: Text(
-          task.timeRange,
-          style: TextStyle(
-            color: Colors.grey[600],
-            fontSize: 12.sp,
-          ),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Text(
+            //   formatDate(task.date),
+            //   style: TextStyle(
+            //     color: Colors.grey[600],
+            //     fontSize: 12.sp,
+            //   ),
+            // ),
+            Text(
+              "${formatTimeOfDay(task.starTime)} - ${formatTimeOfDay(task.endTime)}",
+              style: TextStyle(
+                color: Colors.grey[600],
+                fontSize: 12.sp,
+              ),
+            ),
+          ],
         ),
         trailing: const Icon(
           Icons.chevron_right,
@@ -161,5 +172,21 @@ class TaskCard extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+String formatTimeOfDay(TimeOfDay time) {
+  final hour = time.hourOfPeriod == 0 ? 12 : time.hourOfPeriod;
+  final minute = time.minute.toString().padLeft(2, '0');
+  final period = time.period == DayPeriod.am ? "AM" : "PM";
+  return "$hour:$minute $period";
+}
+
+String formatDate(DateTime date) {
+  try {
+    final String formattedDate = DateFormat('dd-MM-yyyy').format(date);
+    return formattedDate;
+  } catch (e) {
+    return date.toString();
   }
 }

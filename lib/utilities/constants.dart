@@ -6,6 +6,8 @@ const themeColor = Colors.blue;
 const errorColor = Color(0xFFCF6679);
 const kWhiteColor = Color(0xffFFFFFF);
 
+final List<String> categories = ["To Do", "In Progress", "Done"];
+
 void showToast(String message) {
   Fluttertoast.showToast(
     msg: message,

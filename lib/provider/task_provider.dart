@@ -9,9 +9,9 @@ class TaskProvider extends ChangeNotifier {
   final List<Task> _inProgressTaskList = [];
   final List<Task> _doneTaskList = [];
 
-  Box<Task> _todoBox = Hive.box<Task>(todoTaskBox);
-  Box<Task> _inProgressBox = Hive.box<Task>(inProgressTaskBox);
-  Box<Task> _doneBox = Hive.box<Task>(doneTaskBox);
+  final Box<Task> _todoBox = Hive.box<Task>(todoTaskBox);
+  final Box<Task> _inProgressBox = Hive.box<Task>(inProgressTaskBox);
+  final Box<Task> _doneBox = Hive.box<Task>(doneTaskBox);
 
   List<Task> get allInProgressTasks =>
       UnmodifiableListView(_inProgressTaskList);

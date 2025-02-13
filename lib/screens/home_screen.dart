@@ -22,9 +22,6 @@ class _HomeUIState extends State<HomeUI> {
   late Box<Task> doneBox;
 
   bool isLoading = false;
-  List<Task> todosList = [];
-  List<Task> inProgressList = [];
-  List<Task> doneList = [];
 
   @override
   void initState() {

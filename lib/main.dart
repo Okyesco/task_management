@@ -25,7 +25,7 @@ void main() async {
   await Hive.openBox<Task>(todoTaskBox);
   await Hive.openBox<Task>(inProgressTaskBox);
   await Hive.openBox<Task>(doneTaskBox);
-  await Hive.openBox<bool>(themeBox);
+  await Hive.openBox(themeBox);
 
   runApp(
     MultiProvider(

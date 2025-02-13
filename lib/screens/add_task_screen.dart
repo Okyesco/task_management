@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:task_management/provider/task_provider.dart';
 import 'package:task_management/models/task.dart';
@@ -49,9 +48,6 @@ class CreateTaskScreenState extends State<CreateTaskScreen> {
       description: descriptionController.text.trim(),
       category: categories[_selectedCategoryIndex],
     );
-
-    // final hiveTask = await _taskBox.add(task);
-    // print(hiveTask);
 
     _selectedCategoryIndex == 0
         ? taskProvider.addTodoTask(task)
@@ -151,14 +147,12 @@ class CreateTaskScreenState extends State<CreateTaskScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // backgroundColor: Colors.white,
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 20.w),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Back button and title
               Row(
                 children: [
                   IconButton(
@@ -278,7 +272,6 @@ class CreateTaskScreenState extends State<CreateTaskScreen> {
 
                       SizedBox(height: 20.h),
 
-                      // Start and End Time
                       Row(
                         children: [
                           Expanded(
@@ -353,7 +346,6 @@ class CreateTaskScreenState extends State<CreateTaskScreen> {
 
                       SizedBox(height: 30.h),
 
-                      // Create Task Button
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(

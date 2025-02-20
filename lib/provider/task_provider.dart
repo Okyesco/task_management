@@ -7,27 +7,29 @@ import 'package:task_management/utilities/constants.dart';
 class TaskProvider extends ChangeNotifier {
   final List<Task> _todoTaskList = [];
   final List<Task> _inProgressTaskList = [];
-  final List<Task> _doneTaskList = [];
+  final List<Task> _completedTaskList = [];
 
   final Box<Task> _todoBox = Hive.box<Task>(todoTaskBox);
   final Box<Task> _inProgressBox = Hive.box<Task>(inProgressTaskBox);
-  final Box<Task> _doneBox = Hive.box<Task>(doneTaskBox);
+  final Box<Task> _completedBox = Hive.box<Task>(completedTaskBox);
 
   List<Task> get allInProgressTasks =>
       UnmodifiableListView(_inProgressTaskList);
 
   List<Task> get allToDoTasks => UnmodifiableListView(_todoTaskList);
 
-  List<Task> get allDoneTasks => UnmodifiableListView(_doneTaskList);
+  List<Task> get allCompletedTasks => UnmodifiableListView(_completedTaskList);
 
   int get numOfAllTask =>
-      _inProgressTaskList.length + _todoTaskList.length + _doneTaskList.length;
+      _inProgressTaskList.length +
+      _todoTaskList.length +
+      _completedTaskList.length;
 
   int get numOfTodoTask => _todoTaskList.length;
 
   int get numOfInProgressTask => _inProgressTaskList.length;
 
-  int get numOfDoneTask => _doneTaskList.length;
+  int get numOfCompletedTask => _completedTaskList.length;
 
   void addTodoTask(Task task) async {
     try {
@@ -53,10 +55,10 @@ class TaskProvider extends ChangeNotifier {
     }
   }
 
-  void addDoneTask(Task task) async {
+  void addCompletedTask(Task task) async {
     try {
-      _doneTaskList.add(task);
-      await _doneBox.add(task);
+      _completedTaskList.add(task);
+      await _completedBox.add(task);
       debugPrint('${task.taskName} added successfully');
 
       notifyListeners();
@@ -95,13 +97,13 @@ class TaskProvider extends ChangeNotifier {
     }
   }
 
-  void updateDoneTask({
+  void updateCompletedTask({
     required int index,
     required Task task,
   }) async {
     try {
-      _doneTaskList[index] = task;
-      await _doneBox.putAt(index, task);
+      _completedTaskList[index] = task;
+      await _completedBox.putAt(index, task);
       debugPrint('${task.taskName} updated successfully');
 
       notifyListeners();
@@ -134,10 +136,10 @@ class TaskProvider extends ChangeNotifier {
     }
   }
 
-  void deleteDoneTask(int index) async {
+  void deleteCompletedTask(int index) async {
     try {
-      _doneTaskList.removeAt(index);
-      await _doneBox.deleteAt(index);
+      _completedTaskList.removeAt(index);
+      await _completedBox.deleteAt(index);
       debugPrint('Todo Removed Successfully');
 
       notifyListeners();
@@ -149,11 +151,11 @@ class TaskProvider extends ChangeNotifier {
   void clearTasks() async {
     _todoTaskList.clear();
     _inProgressTaskList.clear();
-    _doneTaskList.clear();
+    _completedTaskList.clear();
 
     await _todoBox.clear();
     await _inProgressBox.clear();
-    await _doneBox.clear();
+    await _completedBox.clear();
 
     notifyListeners();
   }
@@ -161,11 +163,11 @@ class TaskProvider extends ChangeNotifier {
   void loadTasks() {
     _todoTaskList.clear();
     _inProgressTaskList.clear();
-    _doneTaskList.clear();
+    _completedTaskList.clear();
 
     _todoTaskList.addAll(_todoBox.values);
     _inProgressTaskList.addAll(_inProgressBox.values);
-    _doneTaskList.addAll(_doneBox.values);
+    _completedTaskList.addAll(_completedBox.values);
 
     notifyListeners();
   }

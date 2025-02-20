@@ -19,7 +19,7 @@ class HomeUI extends StatefulWidget {
 class _HomeUIState extends State<HomeUI> {
   late Box<Task> todoBox;
   late Box<Task> inProgressBox;
-  late Box<Task> doneBox;
+  late Box<Task> completedBox;
 
   bool isLoading = false;
 
@@ -38,7 +38,7 @@ class _HomeUIState extends State<HomeUI> {
 
     todoBox = Hive.box<Task>(todoTaskBox);
     inProgressBox = Hive.box<Task>(inProgressTaskBox);
-    doneBox = Hive.box<Task>(doneTaskBox);
+    completedBox = Hive.box<Task>(completedTaskBox);
 
     if (mounted) {
       final taskProvider = context.read<TaskProvider>();
@@ -153,7 +153,7 @@ class _HomeUIState extends State<HomeUI> {
 
                         // Information Architecture Card
                         SizedBox(height: 20.h),
-                        _buildCurrentTaskCard(taskProvider),
+                        _buildTotalTaskCountCard(taskProvider),
 
                         // Monthly Preview Section
                         SizedBox(height: 30.h),
@@ -223,7 +223,7 @@ class _HomeUIState extends State<HomeUI> {
                                   );
                                 },
                                 child: _buildStatCard(
-                                  taskProvider.numOfDoneTask.toString(),
+                                  taskProvider.numOfCompletedTask.toString(),
                                   categories[2],
                                   Colors.greenAccent,
                                 ),
@@ -242,7 +242,7 @@ class _HomeUIState extends State<HomeUI> {
     );
   }
 
-  Container _buildCurrentTaskCard(TaskProvider taskProvider) {
+  Container _buildTotalTaskCountCard(TaskProvider taskProvider) {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 16.w),
       decoration: BoxDecoration(

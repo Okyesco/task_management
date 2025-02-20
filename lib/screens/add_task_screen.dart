@@ -27,7 +27,6 @@ class CreateTaskScreenState extends State<CreateTaskScreen> {
   TimeOfDay endTime = const TimeOfDay(hour: 11, minute: 0);
   final TextEditingController taskNameController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
-  // final _taskBox = Hive.box(taskBox);
 
   void createTask() async {
     if (taskNameController.text.trim().isEmpty) {
@@ -53,7 +52,7 @@ class CreateTaskScreenState extends State<CreateTaskScreen> {
         ? taskProvider.addTodoTask(task)
         : _selectedCategoryIndex == 1
             ? taskProvider.addInProgressTask(task)
-            : taskProvider.addDoneTask(task);
+            : taskProvider.addCompletedTask(task);
     if (mounted) {
       Navigator.pop(context);
     }
@@ -84,7 +83,7 @@ class CreateTaskScreenState extends State<CreateTaskScreen> {
           : _selectedCategoryIndex == 1
               ? taskProvider.updateInProgressTask(
                   index: widget.taskIndex!, task: task)
-              : taskProvider.updateDoneTask(
+              : taskProvider.updateCompletedTask(
                   index: widget.taskIndex!, task: task);
     }
 
@@ -93,13 +92,13 @@ class CreateTaskScreenState extends State<CreateTaskScreen> {
           ? taskProvider.addTodoTask(task)
           : _selectedCategoryIndex == 1
               ? taskProvider.addInProgressTask(task)
-              : taskProvider.addDoneTask(task);
+              : taskProvider.addCompletedTask(task);
 
       _setCategory(widget.task!.category) == 0
           ? taskProvider.deleteTodoTask(widget.taskIndex!)
           : _setCategory(widget.task!.category) == 1
               ? taskProvider.deleteInProgressTask(widget.taskIndex!)
-              : taskProvider.deleteDoneTask(widget.taskIndex!);
+              : taskProvider.deleteCompletedTask(widget.taskIndex!);
     }
 
     Navigator.pop(context);

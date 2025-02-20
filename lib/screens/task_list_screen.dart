@@ -6,6 +6,7 @@ import 'package:task_management/provider/task_provider.dart';
 import 'package:task_management/screens/add_task_screen.dart';
 import 'package:task_management/utilities/constants.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:task_management/widgets/task_card_widget.dart';
 
 class TaskListUI extends StatelessWidget {
   final int categoryIndex;
@@ -40,7 +41,7 @@ class TaskListUI extends StatelessWidget {
               ? _buildEmptyTasList(categories[0], context, categoryIndex)
               : categoryIndex == 1 && taskProvider.numOfInProgressTask == 0
                   ? _buildEmptyTasList(categories[1], context, categoryIndex)
-                  : categoryIndex == 2 && taskProvider.numOfDoneTask == 0
+                  : categoryIndex == 2 && taskProvider.numOfCompletedTask == 0
                       ? _buildEmptyTasList(
                           categories[2], context, categoryIndex)
                       : Container(
@@ -78,7 +79,7 @@ class TaskListUI extends StatelessWidget {
                                       ? taskProvider.numOfTodoTask
                                       : categoryIndex == 1
                                           ? taskProvider.numOfInProgressTask
-                                          : taskProvider.numOfDoneTask,
+                                          : taskProvider.numOfCompletedTask,
                                   separatorBuilder: (context, index) =>
                                       SizedBox(height: 12.h),
                                   itemBuilder: (context, index) {
@@ -96,7 +97,8 @@ class TaskListUI extends StatelessWidget {
                                                               .allInProgressTasks[
                                                           index]
                                                       : taskProvider
-                                                          .allDoneTasks[index],
+                                                              .allCompletedTasks[
+                                                          index],
                                               taskIndex: index,
                                             ),
                                           ),
@@ -118,7 +120,7 @@ class TaskListUI extends StatelessWidget {
                                                             .deleteInProgressTask(
                                                                 index)
                                                         : taskProvider
-                                                            .deleteDoneTask(
+                                                            .deleteCompletedTask(
                                                                 index);
                                               },
                                               backgroundColor: Colors.red,
@@ -134,7 +136,7 @@ class TaskListUI extends StatelessWidget {
                                                   ? taskProvider
                                                       .allInProgressTasks[index]
                                                   : taskProvider
-                                                      .allDoneTasks[index],
+                                                      .allCompletedTasks[index],
                                         ),
                                       ),
                                     );
@@ -144,77 +146,6 @@ class TaskListUI extends StatelessWidget {
                             ],
                           ),
                         ),
-        ),
-      ),
-    );
-  }
-}
-
-class TaskCard extends StatelessWidget {
-  final Task task;
-
-  const TaskCard({
-    super.key,
-    required this.task,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12.r),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 1.r,
-            blurRadius: 0,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: ListTile(
-        contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-        leading: Container(
-          padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
-          decoration: BoxDecoration(
-            color: Colors.blue.shade100,
-            borderRadius: BorderRadius.circular(8.r),
-          ),
-          child: const Icon(
-            Icons.task,
-          ),
-        ),
-        title: Text(
-          task.taskName,
-          style: const TextStyle(
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              formatDate(task.date),
-              style: TextStyle(
-                color: Colors.grey[600],
-                fontSize: 12.sp,
-              ),
-            ),
-            SizedBox(
-              height: 2.h,
-            ),
-            Text(
-              "${formatTimeOfDay(task.starTime)} - ${formatTimeOfDay(task.endTime)}",
-              style: TextStyle(
-                color: Colors.grey[600],
-                fontSize: 12.sp,
-              ),
-            ),
-          ],
-        ),
-        trailing: const Icon(
-          Icons.chevron_right,
-          color: Colors.grey,
         ),
       ),
     );

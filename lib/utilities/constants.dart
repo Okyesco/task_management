@@ -8,10 +8,10 @@ const errorColor = Color(0xFFCF6679);
 const kWhiteColor = Color(0xffFFFFFF);
 const String todoTaskBox = "todotaskbox";
 const String inProgressTaskBox = "inprogresstaskbox";
-const String doneTaskBox = "donetaskbox";
+const String completedTaskBox = "completedtaskbox";
 const String themeBox = "themebox";
 
-final List<String> categories = ["To Do", "In Progress", "Done"];
+final List<String> categories = ["To Do", "In Progress", "Completed"];
 
 void showToast(String message) {
   Fluttertoast.showToast(

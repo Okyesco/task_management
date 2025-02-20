@@ -24,7 +24,7 @@ void main() async {
 
   await Hive.openBox<Task>(todoTaskBox);
   await Hive.openBox<Task>(inProgressTaskBox);
-  await Hive.openBox<Task>(doneTaskBox);
+  await Hive.openBox<Task>(completedTaskBox);
   await Hive.openBox(themeBox);
 
   runApp(
